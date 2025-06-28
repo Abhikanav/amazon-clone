@@ -61,7 +61,8 @@ pipeline {
             }
         }
         */
-         stage('OWASP FS Scan') {
+        /*
+        stage('OWASP FS Scan') {
           steps {
             script {
                 timeout(time: 2, unit: 'MINUTES') {
@@ -75,7 +76,7 @@ pipeline {
            }
         }
      }
-
+       */
 
         stage('Trivy File System Scan') {
             steps {

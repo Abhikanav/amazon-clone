@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/Pravesh-Sudha/amazon-clone.git'
+                git branch: 'main', url: 'https https://github.com/Abhikanav/amazon-clone.git'
             }
         }
         stage('SonarQube Analysis') {
@@ -55,20 +55,20 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh 'docker build -t amazon-clone .'
-                        sh 'docker tag amazon-clone pravesh2003/amazon-clone:latest'
-                        sh 'docker push pravesh2003/amazon-clone:latest'
+                        sh 'docker tag amazon-clone abhikmgr/amazon-clone:latest'
+                        sh 'docker push abhikmgr/amazon-clone:latest'
                     }
                 }
             }
         }
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image pravesh2003/amazon-clone:latest > trivyimage.txt'
+                sh 'trivy image abhikmgr/amazon-clone:latest > trivyimage.txt'
             }
         }
         stage('Deploy to Container') {
             steps {
-                sh 'docker run -d --name amazon-clone -p 3000:3000 pravesh2003/amazon-clone:latest'
+                sh 'docker run -d --name amazon-clone -p 3000:3000 abhikmgr/amazon-clone:latest'
             }
         }
     }

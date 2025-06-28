@@ -30,7 +30,7 @@ pipeline {
          stage('SonarQube Analysis') {
            steps {
               withSonarQubeEnv('sonar-server') {
-                   withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                   withCredentials([string(credentialsId: 'Jenkins', variable: 'SONAR_TOKEN')]) {
                        sh """
                            $SCANNER_HOME/bin/sonar-scanner \
                            -Dsonar.projectName=Amazon \

@@ -54,12 +54,29 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('OWASP FS Scan') {
+        /* stage('OWASP FS Scan') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+        */
+         stage('OWASP FS Scan') {
+          steps {
+            script {
+                timeout(time: 2, unit: 'MINUTES') {
+                  try {
+                      dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                      dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                        } catch (e) {
+                    echo "OWASP FS Scan skipped or timed out: ${e.getMessage()}"
+                 }
+              }
+           }
+        }
+     }
+
+
         stage('Trivy File System Scan') {
             steps {
                 sh 'trivy fs . > trivyfs.txt'

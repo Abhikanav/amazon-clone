@@ -18,15 +18,29 @@ pipeline {
                 git branch: 'main', url: 'https https://github.com/Abhikanav/amazon-clone.git'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectName=Amazon \
-                    -Dsonar.projectKey=Amazon'''
+        //stage('SonarQube Analysis') {
+        //    steps {
+        //        withSonarQubeEnv('sonar-server') {
+        //            sh '''$SCANNER_HOME/bin/sonar-scanner \
+        //            -Dsonar.projectName=Amazon \
+        //            -Dsonar.projectKey=Amazon'''
+        //        }
+        //    }
+       // } 
+         stage('SonarQube Analysis') {
+           steps {
+              withSonarQubeEnv('sonar-server') {
+                   withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                       sh '''
+                           $SCANNER_HOME/bin/sonar-scanner \
+                           -Dsonar.projectName=Amazon \
+                           -Dsonar.projectKey=Amazon \
+                           -Dsonar.login=$SONAR_TOKEN
+                      '''
+                    }
                 }
             }
-        }
+       }
         stage('Quality Gate') {
             steps {
                 script {
@@ -34,7 +48,7 @@ pipeline {
                 }
             }
         }
-        stage('Install Dependencies') {
+       stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }

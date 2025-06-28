@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https https://github.com/Abhikanav/amazon-clone.git'
+                git branch: 'main', url: 'https://github.com/Abhikanav/amazon-clone.git'
             }
         }
         stage('SonarQube Analysis') {

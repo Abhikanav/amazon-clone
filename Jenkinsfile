@@ -31,17 +31,17 @@ pipeline {
            steps {
               withSonarQubeEnv('sonar-server') {
                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                       sh '''
+                       sh """
                            $SCANNER_HOME/bin/sonar-scanner \
                            -Dsonar.projectName=Amazon \
                            -Dsonar.projectKey=Amazon \
                            -Dsonar.login=$SONAR_TOKEN
-                      '''
-                    }
-                }
-            }
-       }
-        stage('Quality Gate') {
+                      """
+                      }
+                 }
+              }
+         } 
+         stage('Quality Gate') {
             steps {
                 script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'jenkins'

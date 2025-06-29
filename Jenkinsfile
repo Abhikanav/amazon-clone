@@ -75,37 +75,35 @@ pipeline {
                 SNYK_TOKEN = credentials('snyk-token')
             }
             steps {
+                sh 'npm install -g snyk'
                 sh 'npx snyk auth $SNYK_TOKEN'
                 sh 'npx snyk test > snyk_report.txt || true'
             }
         }
 
-        /*
-        stage('OWASP FS Scan') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
-        */
-
-        /*
-        stage('OWASP FS Scan with Timeout') {
-            steps {
-                script {
-                    timeout(time: 2, unit: 'MINUTES') {
-                        try {
-                            dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                        } catch (e) {
-                            echo "OWASP FS Scan skipped or timed out: ${e.getMessage()}"
-                        }
-                    }
-                }
-            }
-        }
-        */
-
+        
+        //stage('OWASP FS Scan') {
+        //    steps {
+        //        dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+        //        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //    }
+        //}
+        
+        //stage('OWASP FS Scan with Timeout') {
+        //    steps {
+        //        script {
+        //            timeout(time: 2, unit: 'MINUTES') {
+        //                try {
+        //                    dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+        //                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //                } catch (e) {
+       //                     echo "OWASP FS Scan skipped or timed out: ${e.getMessage()}"
+        //                }
+        //            }
+        //        }
+        //    }
+     //    }
+       
         stage('Trivy File System Scan') {
             steps {
                 sh 'trivy fs . > trivyfs.txt'
@@ -132,7 +130,11 @@ pipeline {
 
         stage('Deploy to Container') {
             steps {
-                sh 'docker rm amazon-clone'
+                // Stop the container if it's running
+                 sh 'docker stop amazon-clone || true'
+               // Remove the container if it exists
+                sh 'docker rm amazon-clone || true'
+              // Run the new container
                 sh 'docker run -d --name amazon-clone -p 3000:3000 abhikmgr/amazon-clone:latest'
             }
         }

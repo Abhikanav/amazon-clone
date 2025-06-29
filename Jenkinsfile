@@ -132,6 +132,7 @@ pipeline {
 
         stage('Deploy to Container') {
             steps {
+                sh 'docker rm amazon-clone'
                 sh 'docker run -d --name amazon-clone -p 3000:3000 abhikmgr/amazon-clone:latest'
             }
         }
